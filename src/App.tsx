@@ -5,19 +5,32 @@ import { useState } from "react";
 
 function App() {
   const [imageSource, setImageSource] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const generateRandomCat = async () => {
+    setImageSource("");
+    setIsLoading(true);
     const response = await fetch("https://cataas.com/cat?json=true");
     const cat = await response.json();
     setImageSource(cat.url);
+  };
+
+  const imageDidLoad = () => {
+    setIsLoading(false);
   };
 
   return (
     <div className="App">
       <Header text={"Generate a random cat"} />
       <Button generateRandomCat={generateRandomCat} />
-      <CatContainer imageSource={imageSource} alternateText="Random Cat" />
-      <hr />
+      {isLoading && <p>Loading...</p>}
+      {imageSource && (
+        <CatContainer
+          imageSource={imageSource}
+          alternateText="Random Cat"
+          imageDidLoad={imageDidLoad}
+        />
+      )}
     </div>
   );
 }
